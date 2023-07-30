@@ -25,3 +25,7 @@ end
 appraise "rails_6.1" do
   gem "activerecord", "~> 6.1.0"
 end
+
+appraise "rails_7.0" do
+  gem "activerecord", "~> 7.0.6"
+end

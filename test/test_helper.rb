@@ -17,6 +17,7 @@ ActiveRecord::Base.logger         = l
 ActiveRecord::Base.configurations = YAML.load(ERB.new(IO.read(config_file_name)).result)
 
 class ApplicationRecord < ActiveRecord::Base
+  primary_abstract_class # <= there can only be one in your app
   self.abstract_class = true
 
   if ActiveRecord::VERSION::MAJOR >= 6
@@ -41,10 +42,10 @@ end
 # Define Schema in both databases.
 # Note: This is for testing purposes only and not needed by a Rails app.
 if ActiveRecord::VERSION::MAJOR >= 6
-  ActiveRecord::Base.connected_to(database: :primary_reader) do
+  ActiveRecord::Base.connected_to(role: :primary_reader) do
     create_schema
   end
-  ActiveRecord::Base.connected_to(database: :primary) do
+  ActiveRecord::Base.connected_to(role: :primary) do
     create_schema
   end
   ActiveRecord::Base.establish_connection(:test)

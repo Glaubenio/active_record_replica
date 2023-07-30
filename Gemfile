@@ -13,5 +13,4 @@ gem "appraisal"
 gem "jdbc-sqlite3", platform: :jruby
 gem "sqlite3", platform: :ruby
 
-# gem "activerecord", "~> 5.2.0"
-gem "activerecord", "~> 6.1"
+gem "activerecord", "~> 7.0.3"
