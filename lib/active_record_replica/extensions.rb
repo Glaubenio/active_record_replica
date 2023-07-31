@@ -15,7 +15,23 @@ module ActiveRecordReplica
       RUBY
     end
 
-    if ActiveRecord::VERSION::MAJOR >= 6
+    if ActiveRecord::VERSION::MAJOR >= 7
+      def active_record_replica_select(select_method, sql, name = nil, *args, **kargs)
+        ActiveRecordReplica.read_from_primary do
+          if ActiveRecord::Base.current_role == ActiveRecord.reading_role
+            public_send(select_method, sql, "Replica: #{name || 'SQL'}", *args, **kargs)
+          else
+            ActiveRecord::Base.connected_to(role: ActiveRecord.reading_role) do
+              reader_connection.public_send(select_method, sql, "Replica: #{name || 'SQL'}", *args, **kargs)
+            end
+          end
+        end
+      end
+
+      def reader_connection
+        ActiveRecord::Base.connection
+      end
+    elsif ActiveRecord::VERSION::MAJOR >= 6
       def active_record_replica_select(select_method, sql, name = nil, *args, **kargs)
         ActiveRecordReplica.read_from_primary do
           if ActiveRecord::Base.current_role == ActiveRecord::Base.reading_role
